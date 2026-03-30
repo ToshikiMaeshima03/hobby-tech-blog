@@ -1,0 +1,116 @@
+---
+import { site } from '@/data/site';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  publishedAt?: Date;
+  updatedAt?: Date;
+  canonicalUrl?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  ogImage = site.ogImage,
+  ogType = 'website',
+  publishedAt,
+  updatedAt,
+  canonicalUrl,
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${site.name}` : site.name;
+const canonical = canonicalUrl || Astro.url.href;
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : new URL(ogImage, site.url).href;
+---
+
+<!DOCTYPE html>
+<html lang={site.language}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+  <!-- OGP -->
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:locale" content={site.locale} />
+  <meta property="og:site_name" content={site.name} />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={pageTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
+
+  <!-- Article dates -->
+  {publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
+  {updatedAt && <meta property="article:modified_time" content={updatedAt.toISOString()} />}
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+
+  <!-- Structured Data: WebSite -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": site.name,
+    "description": site.description,
+    "url": site.url,
+    "inLanguage": site.language,
+    "publisher": {
+      "@type": "Organization",
+      "name": site.author,
+      "url": "https://cleverlab.lol",
+    },
+  })} />
+</head>
+<body class="min-h-screen flex flex-col bg-surface">
+  <slot name="header">
+    <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border">
+      <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+        <a href="/" class="font-bold text-lg text-primary-700 hover:text-primary-600 transition-colors">
+          {site.name}
+        </a>
+        <nav class="flex items-center gap-6 text-sm">
+          <a href="/" class="text-text-muted hover:text-text transition-colors">ホーム</a>
+          <a href="/blog" class="text-text-muted hover:text-text transition-colors">記事一覧</a>
+          <a href="/rss.xml" class="text-text-muted hover:text-text transition-colors" aria-label="RSS">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          </a>
+        </nav>
+      </div>
+    </header>
+  </slot>
+
+  <main class="flex-1">
+    <slot />
+  </main>
+
+  <footer class="border-t border-border bg-surface-alt">
+    <div class="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-text-muted">
+      <p>&copy; {new Date().getFullYear()} {site.author}. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

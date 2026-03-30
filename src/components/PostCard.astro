@@ -1,0 +1,56 @@
+---
+import { site } from '@/data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  slug: string;
+  category: string;
+  publishedAt: Date;
+  tags?: string[];
+}
+
+const { title, description, slug, category, publishedAt, tags = [] } = Astro.props;
+
+const categoryData = site.categories.find(c => c.slug === category);
+const categoryName = categoryData?.name || category;
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+---
+
+<article class="group border border-border rounded-xl p-5 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-surface">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-100 text-primary-700">
+      {categoryName}
+    </span>
+    <time datetime={publishedAt.toISOString()} class="text-xs text-text-muted">
+      {formatDate(publishedAt)}
+    </time>
+  </div>
+
+  <h2 class="text-lg font-bold mb-2 group-hover:text-primary-600 transition-colors">
+    <a href={`/blog/${slug}/`} class="block">
+      {title}
+    </a>
+  </h2>
+
+  <p class="text-sm text-text-muted mb-3 line-clamp-2">
+    {description}
+  </p>
+
+  {tags.length > 0 && (
+    <div class="flex flex-wrap gap-1.5">
+      {tags.slice(0, 4).map(tag => (
+        <span class="text-xs text-text-muted bg-surface-alt px-2 py-0.5 rounded">
+          #{tag}
+        </span>
+      ))}
+    </div>
+  )}
+</article>

@@ -1,0 +1,129 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import { site } from '@/data/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, category, tags, publishedAt, updatedAt } = post.data;
+
+const categoryData = site.categories.find(c => c.slug === category);
+const categoryName = categoryData?.name || category;
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
+// 構造化データ: Article
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "datePublished": publishedAt.toISOString(),
+  "dateModified": (updatedAt || publishedAt).toISOString(),
+  "author": {
+    "@type": "Organization",
+    "name": site.author,
+    "url": "https://cleverlab.lol",
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": site.author,
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `${site.url}/blog/${post.id}/`,
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "ホーム", "item": site.url },
+    { "@type": "ListItem", "position": 2, "name": "記事一覧", "item": `${site.url}/blog` },
+    { "@type": "ListItem", "position": 3, "name": title, "item": `${site.url}/blog/${post.id}/` },
+  ],
+};
+---
+
+<Layout
+  title={title}
+  description={description}
+  ogType="article"
+  publishedAt={publishedAt}
+  updatedAt={updatedAt}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} slot="head" />
+
+  <article class="max-w-3xl mx-auto px-4 py-12">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-text-muted mb-8" aria-label="パンくずリスト">
+      <ol class="flex items-center gap-1.5">
+        <li><a href="/" class="hover:text-primary-600">ホーム</a></li>
+        <li>/</li>
+        <li><a href="/blog" class="hover:text-primary-600">記事一覧</a></li>
+        <li>/</li>
+        <li class="text-text truncate max-w-xs">{title}</li>
+      </ol>
+    </nav>
+
+    <!-- Header -->
+    <header class="mb-10">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-primary-100 text-primary-700">
+          {categoryName}
+        </span>
+        <time datetime={publishedAt.toISOString()} class="text-sm text-text-muted">
+          {formatDate(publishedAt)}
+        </time>
+        {updatedAt && (
+          <span class="text-sm text-text-muted">
+            (更新: {formatDate(updatedAt)})
+          </span>
+        )}
+      </div>
+      <h1 class="text-2xl md:text-3xl font-bold leading-tight mb-4">{title}</h1>
+      <p class="text-text-muted">{description}</p>
+    </header>
+
+    <!-- Content -->
+    <div class="prose">
+      <Content />
+    </div>
+
+    <!-- Tags -->
+    {tags && tags.length > 0 && (
+      <div class="mt-10 pt-6 border-t border-border">
+        <div class="flex flex-wrap gap-2">
+          {tags.map(tag => (
+            <span class="text-sm text-text-muted bg-surface-alt px-3 py-1 rounded-full">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Back link -->
+    <div class="mt-10">
+      <a href="/blog" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+        &larr; 記事一覧に戻る
+      </a>
+    </div>
+  </article>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PostCard from '@/components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { site } from '@/data/site';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const posts = allPosts.sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+);
+
+const categoryCount: Record<string, number> = {};
+for (const post of allPosts) {
+  categoryCount[post.data.category] = (categoryCount[post.data.category] || 0) + 1;
+}
+---
+
+<Layout title="記事一覧" description="Web制作・フリーランス向け技術記事の一覧">
+  <section class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-2xl font-bold mb-2">記事一覧</h1>
+    <p class="text-text-muted mb-8">全 {posts.length} 件</p>
+
+    <!-- Category filter -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      <a
+        href="/blog"
+        class="text-sm px-3 py-1.5 rounded-full border border-primary-300 bg-primary-50 text-primary-700 font-medium"
+      >
+        すべて ({posts.length})
+      </a>
+      {site.categories.map(cat => (
+        <a
+          href={`/blog?category=${cat.slug}`}
+          class="text-sm px-3 py-1.5 rounded-full border border-border hover:border-primary-300 hover:bg-primary-50 transition-all"
+        >
+          {cat.name} ({categoryCount[cat.slug] || 0})
+        </a>
+      ))}
+    </div>
+
+    <!-- Posts grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {posts.map(post => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          slug={post.id}
+          category={post.data.category}
+          publishedAt={post.data.publishedAt}
+          tags={post.data.tags}
+        />
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <p class="text-center text-text-muted py-12">まだ記事がありません。</p>
+    )}
+  </section>
+</Layout>
