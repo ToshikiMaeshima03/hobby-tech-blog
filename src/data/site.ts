@@ -1,8 +1,8 @@
 export const site = {
-  name: 'CleverLab Tech Blog',
+  name: 'Code & Craft',
   description: 'Web制作・フリーランス向けの技術Tips、ツール比較、効率化ノウハウを発信するテックブログ',
-  url: 'https://blog.cleverlab.lol',
-  author: 'CleverLab',
+  url: 'https://clvr.dev',
+  author: 'Clever',
   locale: 'ja_JP',
   language: 'ja',
   ogImage: '/images/og-default.png',

@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://blog.cleverlab.lol',
+  site: 'https://clvr.dev',
   vite: {
     plugins: [tailwindcss()],
   },

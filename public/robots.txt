@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://blog.cleverlab.lol/sitemap-index.xml
+Sitemap: https://clvr.dev/sitemap-index.xml
