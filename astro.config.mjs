@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://clvr.dev',
+  site: 'https://clvr.lol',
   vite: {
     plugins: [tailwindcss()],
   },

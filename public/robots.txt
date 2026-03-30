@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://clvr.dev/sitemap-index.xml
+Sitemap: https://clvr.lol/sitemap-index.xml
