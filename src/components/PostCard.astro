@@ -24,7 +24,7 @@ const formatDate = (date: Date) => {
 };
 ---
 
-<article class="group border border-border rounded-xl p-5 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-surface">
+<article class="group relative border border-border rounded-xl p-5 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-surface">
   <div class="flex items-center gap-2 mb-3">
     <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-100 text-primary-700">
       {categoryName}
@@ -35,7 +35,7 @@ const formatDate = (date: Date) => {
   </div>
 
   <h2 class="text-lg font-bold mb-2 group-hover:text-primary-600 transition-colors">
-    <a href={`/blog/${slug}/`} class="block">
+    <a href={`/blog/${slug}/`} class="block after:absolute after:inset-0">
       {title}
     </a>
   </h2>

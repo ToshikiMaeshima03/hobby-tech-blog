@@ -1,0 +1,80 @@
+---
+import { site } from '@/data/site';
+
+interface Props {
+  title: string;
+  slug: string;
+}
+
+const { title, slug } = Astro.props;
+const url = `${site.url}/blog/${slug}/`;
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+---
+
+<div class="flex items-center gap-3 mt-8">
+  <span class="text-sm text-text-muted font-medium">シェア:</span>
+  <div class="flex gap-2">
+    <!-- X (Twitter) -->
+    <a
+      href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-alt border border-border hover:bg-text hover:text-surface transition-all"
+      aria-label="Xでシェア（新しいタブで開く）"
+    >
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+
+    <!-- はてなブックマーク -->
+    <a
+      href={`https://b.hatena.ne.jp/entry/${url}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-alt border border-border hover:bg-[#00A4DE] hover:text-white hover:border-[#00A4DE] transition-all"
+      aria-label="はてなブックマークに追加（新しいタブで開く）"
+    >
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.47 2H3.53A1.45 1.45 0 002 3.38v17.24A1.45 1.45 0 003.53 22h16.94A1.45 1.45 0 0022 20.62V3.38A1.45 1.45 0 0020.47 2zM8.09 17.27a1.68 1.68 0 01-.49 1.21 1.79 1.79 0 01-1.24.48 1.78 1.78 0 01-1.24-.48 1.68 1.68 0 01-.5-1.21 1.74 1.74 0 01.5-1.24 1.77 1.77 0 011.24-.49 1.79 1.79 0 011.24.49 1.74 1.74 0 01.49 1.24zm0-4.55a1 1 0 01-.27.75 1.83 1.83 0 01-.77.45l-.89.27a2.48 2.48 0 00-1.14.73 2.16 2.16 0 00-.39 1.36v.58h4.54v1.55H2.44v-1.55-.58a3.56 3.56 0 01.77-2.38 4 4 0 011.93-1.28l.89-.27a.78.78 0 00.33-.19.39.39 0 00.12-.3v-.62a1.05 1.05 0 00-.3-.77 1.09 1.09 0 00-.8-.3 1.09 1.09 0 00-.8.3 1.05 1.05 0 00-.3.77v.23H2.73v-.23A2.65 2.65 0 013.5 9a2.74 2.74 0 011.88-.72A2.74 2.74 0 017.26 9a2.65 2.65 0 01.77 1.93zm11.35 5.5h-2.17v-4.63h-2.73V11.6h2.73V7h2.17v4.63h2.73v1.96h-2.73z"/></svg>
+    </a>
+
+    <!-- LINE -->
+    <a
+      href={`https://social-plugins.line.me/lineit/share?url=${encodedUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-alt border border-border hover:bg-[#06C755] hover:text-white hover:border-[#06C755] transition-all"
+      aria-label="LINEでシェア（新しいタブで開く）"
+    >
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+    </a>
+
+    <!-- コピー -->
+    <button
+      class="copy-url inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-alt border border-border hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all"
+      data-url={url}
+      aria-label="URLをコピー"
+    >
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+    </button>
+    <span class="copy-status sr-only" role="status" aria-live="polite"></span>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.copy-url').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const url = (btn as HTMLElement).dataset.url;
+      if (url) {
+        await navigator.clipboard.writeText(url);
+        const svg = btn.innerHTML;
+        btn.innerHTML = '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+        const statusEl = btn.nextElementSibling;
+        if (statusEl) statusEl.textContent = 'URLをコピーしました';
+        setTimeout(() => {
+          btn.innerHTML = svg;
+          if (statusEl) statusEl.textContent = '';
+        }, 2000);
+      }
+    });
+  });
+</script>

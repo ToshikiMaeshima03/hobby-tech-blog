@@ -1,5 +1,11 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
+import ReadingTime from '@/components/ReadingTime.astro';
+import ShareButtons from '@/components/ShareButtons.astro';
+import AuthorBio from '@/components/AuthorBio.astro';
+import RelatedPosts from '@/components/RelatedPosts.astro';
+import NewsletterForm from '@/components/NewsletterForm.astro';
 import { getCollection, render } from 'astro:content';
 import { site } from '@/data/site';
 
@@ -12,7 +18,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const { title, description, category, tags, publishedAt, updatedAt } = post.data;
 
 const categoryData = site.categories.find(c => c.slug === category);
@@ -32,16 +38,23 @@ const articleSchema = {
   "@type": "Article",
   "headline": title,
   "description": description,
+  "image": `${site.url}${site.ogImage}`,
   "datePublished": publishedAt.toISOString(),
   "dateModified": (updatedAt || publishedAt).toISOString(),
   "author": {
-    "@type": "Organization",
+    "@type": "Person",
     "name": site.author,
-    "url": "https://cleverlab.lol",
+    "url": `${site.url}/about/`,
+    "sameAs": [site.social.github, site.social.portfolio].filter(Boolean),
   },
   "publisher": {
     "@type": "Organization",
-    "name": site.author,
+    "name": site.name,
+    "url": site.url,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${site.url}/favicon.svg`,
+    },
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -53,8 +66,8 @@ const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "ホーム", "item": site.url },
-    { "@type": "ListItem", "position": 2, "name": "記事一覧", "item": `${site.url}/blog` },
+    { "@type": "ListItem", "position": 1, "name": "ホーム", "item": `${site.url}/` },
+    { "@type": "ListItem", "position": 2, "name": "記事一覧", "item": `${site.url}/blog/` },
     { "@type": "ListItem", "position": 3, "name": title, "item": `${site.url}/blog/${post.id}/` },
   ],
 };
@@ -75,15 +88,15 @@ const breadcrumbSchema = {
     <nav class="text-sm text-text-muted mb-8" aria-label="パンくずリスト">
       <ol class="flex items-center gap-1.5">
         <li><a href="/" class="hover:text-primary-600">ホーム</a></li>
-        <li>/</li>
-        <li><a href="/blog" class="hover:text-primary-600">記事一覧</a></li>
-        <li>/</li>
-        <li class="text-text truncate max-w-xs">{title}</li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/blog/" class="hover:text-primary-600">記事一覧</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-text truncate max-w-xs" aria-current="page">{title}</li>
       </ol>
     </nav>
 
     <!-- Header -->
-    <header class="mb-10">
+    <header class="mb-8">
       <div class="flex items-center gap-2 mb-4">
         <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-primary-100 text-primary-700">
           {categoryName}
@@ -97,31 +110,49 @@ const breadcrumbSchema = {
           </span>
         )}
       </div>
-      <h1 class="text-2xl md:text-3xl font-bold leading-tight mb-4">{title}</h1>
-      <p class="text-text-muted">{description}</p>
+      <h1 class="text-2xl md:text-3xl font-bold leading-tight mb-3">{title}</h1>
+      <p class="text-text-muted mb-3">{description}</p>
+      <ReadingTime content={post.body || ''} />
     </header>
+
+    <!-- Table of Contents -->
+    <TableOfContents headings={headings} />
 
     <!-- Content -->
     <div class="prose">
       <Content />
     </div>
 
-    <!-- Tags -->
-    {tags && tags.length > 0 && (
-      <div class="mt-10 pt-6 border-t border-border">
-        <div class="flex flex-wrap gap-2">
+    <!-- Tags + Share -->
+    <div class="mt-10 pt-6 border-t border-border">
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-4">
           {tags.map(tag => (
             <span class="text-sm text-text-muted bg-surface-alt px-3 py-1 rounded-full">
               #{tag}
             </span>
           ))}
         </div>
-      </div>
-    )}
+      )}
+      <ShareButtons title={title} slug={post.id} />
+    </div>
+
+    <!-- Author Bio -->
+    <div class="mt-8">
+      <AuthorBio />
+    </div>
+
+    <!-- Newsletter CTA -->
+    <div class="mt-8">
+      <NewsletterForm variant="inline" />
+    </div>
+
+    <!-- Related Posts -->
+    <RelatedPosts currentSlug={post.id} category={category} />
 
     <!-- Back link -->
     <div class="mt-10">
-      <a href="/blog" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+      <a href="/blog/" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
         &larr; 記事一覧に戻る
       </a>
     </div>

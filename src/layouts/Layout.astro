@@ -1,5 +1,6 @@
 ---
 import { site } from '@/data/site';
+import NewsletterForm from '@/components/NewsletterForm.astro';
 import '@/styles/global.css';
 
 interface Props {
@@ -24,7 +25,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const pageTitle = title ? `${title} | ${site.name}` : site.name;
+const pageTitle = title ? `${title} | ${site.name}` : `${site.name} - ${site.description}`;
 const canonical = canonicalUrl || Astro.url.href;
 const ogImageUrl = ogImage.startsWith('http') ? ogImage : new URL(ogImage, site.url).href;
 ---
@@ -65,10 +66,24 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : new URL(ogImage, site.
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
 
-  <!-- Fonts -->
+  <!-- Fonts (non-render-blocking) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  </noscript>
 
   <!-- Structured Data: WebSite -->
   <script type="application/ld+json" set:html={JSON.stringify({
@@ -80,37 +95,130 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : new URL(ogImage, site.
     "inLanguage": site.language,
     "publisher": {
       "@type": "Organization",
-      "name": site.author,
-      "url": "https://cleverlab.lol",
+      "name": site.name,
+      "url": site.url,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${site.url}/favicon.svg`,
+      },
     },
   })} />
+
+  <slot name="head" />
 </head>
 <body class="min-h-screen flex flex-col bg-surface">
+  <!-- Skip link -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
+    メインコンテンツへスキップ
+  </a>
+
   <slot name="header">
     <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border">
       <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         <a href="/" class="font-bold text-lg text-primary-700 hover:text-primary-600 transition-colors">
           {site.name}
         </a>
-        <nav class="flex items-center gap-6 text-sm">
+
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center gap-5 text-sm" aria-label="メインナビゲーション">
           <a href="/" class="text-text-muted hover:text-text transition-colors">ホーム</a>
-          <a href="/blog" class="text-text-muted hover:text-text transition-colors">記事一覧</a>
+          <a href="/blog/" class="text-text-muted hover:text-text transition-colors">記事一覧</a>
+          <a href="/about/" class="text-text-muted hover:text-text transition-colors">About</a>
           <a href="/rss.xml" class="text-text-muted hover:text-text transition-colors" aria-label="RSS">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
           </a>
         </nav>
+
+        <!-- Mobile hamburger -->
+        <button
+          class="md:hidden p-2 text-text-muted hover:text-text transition-colors"
+          aria-label="メニューを開く"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+          id="mobile-menu-btn"
+        >
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
       </div>
+
+      <!-- Mobile nav -->
+      <nav id="mobile-nav" class="hidden md:hidden border-t border-border bg-surface" aria-label="モバイルナビゲーション">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2 text-sm">
+          <a href="/" class="py-2 text-text-muted hover:text-text transition-colors">ホーム</a>
+          <a href="/blog/" class="py-2 text-text-muted hover:text-text transition-colors">記事一覧</a>
+          <a href="/about/" class="py-2 text-text-muted hover:text-text transition-colors">About</a>
+          <a href="/rss.xml" class="py-2 text-text-muted hover:text-text transition-colors">RSS</a>
+        </div>
+      </nav>
     </header>
   </slot>
 
-  <main class="flex-1">
+  <main id="main-content" class="flex-1">
     <slot />
   </main>
 
-  <footer class="border-t border-border bg-surface-alt">
-    <div class="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-text-muted">
-      <p>&copy; {new Date().getFullYear()} {site.author}. All rights reserved.</p>
+  <footer class="border-t border-border bg-surface-dark text-white">
+    <div class="max-w-5xl mx-auto px-4 py-12">
+      <div class="grid md:grid-cols-3 gap-10">
+        <!-- About Column -->
+        <div>
+          <h2 class="font-bold text-lg mb-3">{site.name}</h2>
+          <p class="text-sm text-white/60 mb-4">{site.description}</p>
+          <div class="flex items-center gap-3">
+            {site.social.github && (
+              <a href={site.social.github} target="_blank" rel="noopener noreferrer" class="text-white/70 hover:text-white transition-colors" aria-label="GitHub（新しいタブで開く）">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            )}
+            <a href="/rss.xml" class="text-white/70 hover:text-white transition-colors" aria-label="RSS">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Links Column -->
+        <div>
+          <h2 class="font-bold mb-3">カテゴリ</h2>
+          <ul class="space-y-2 text-sm">
+            {site.categories.map(cat => (
+              <li>
+                <a href={`/blog/category/${cat.slug}/`} class="text-white/60 hover:text-white transition-colors">
+                  {cat.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Newsletter Column -->
+        <div>
+          <h2 class="font-bold mb-3">メールで記事を受け取る</h2>
+          <p class="text-sm text-white/60 mb-4">週1回、最新記事をお届けします。</p>
+          <NewsletterForm variant="footer" />
+        </div>
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-white/60">
+        <p>&copy; {new Date().getFullYear()} {site.author}. All rights reserved.</p>
+        <nav aria-label="フッターナビゲーション" class="flex items-center gap-4">
+          <a href="/about/" class="hover:text-white transition-colors">About</a>
+          <a href="/rss.xml" class="hover:text-white transition-colors">RSS</a>
+        </nav>
+      </div>
     </div>
   </footer>
+
+  <script>
+    const btn = document.getElementById('mobile-menu-btn');
+    const nav = document.getElementById('mobile-nav');
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        nav.classList.toggle('hidden');
+        btn.setAttribute('aria-label', expanded ? 'メニューを開く' : 'メニューを閉じる');
+      });
+    }
+  </script>
 </body>
 </html>

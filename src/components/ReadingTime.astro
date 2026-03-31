@@ -1,0 +1,14 @@
+---
+interface Props {
+  content: string;
+}
+
+const { content } = Astro.props;
+
+// 日本語は約400文字/分、コードブロックは除外して計算
+const textOnly = content.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
+const charCount = textOnly.length;
+const minutes = Math.max(1, Math.ceil(charCount / 400));
+---
+
+<span class="text-sm text-text-muted">約{minutes}分で読めます</span>

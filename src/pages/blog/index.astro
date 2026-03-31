@@ -23,14 +23,15 @@ for (const post of allPosts) {
     <!-- Category filter -->
     <div class="flex flex-wrap gap-2 mb-8">
       <a
-        href="/blog"
+        href="/blog/"
         class="text-sm px-3 py-1.5 rounded-full border border-primary-300 bg-primary-50 text-primary-700 font-medium"
+        aria-current="page"
       >
         すべて ({posts.length})
       </a>
       {site.categories.map(cat => (
         <a
-          href={`/blog?category=${cat.slug}`}
+          href={`/blog/category/${cat.slug}/`}
           class="text-sm px-3 py-1.5 rounded-full border border-border hover:border-primary-300 hover:bg-primary-50 transition-all"
         >
           {cat.name} ({categoryCount[cat.slug] || 0})

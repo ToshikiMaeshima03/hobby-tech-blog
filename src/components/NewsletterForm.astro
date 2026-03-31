@@ -1,0 +1,115 @@
+---
+interface Props {
+  variant?: 'hero' | 'inline' | 'footer';
+}
+
+const { variant = 'inline' } = Astro.props;
+
+const isHero = variant === 'hero';
+const isFooter = variant === 'footer';
+const inputId = `newsletter-email-${variant}`;
+---
+
+<div class:list={[
+  'newsletter-form',
+  isHero && 'bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 md:p-10 text-white',
+  !isHero && !isFooter && 'bg-surface-alt border border-border rounded-xl p-6 md:p-8',
+  isFooter && '',
+]}>
+  {!isFooter && (
+    <div class="text-center mb-5">
+      <h3 class:list={[
+        'font-bold mb-2',
+        isHero ? 'text-xl md:text-2xl text-white' : 'text-lg text-text',
+      ]}>
+        最新記事をメールで受け取る
+      </h3>
+      <p class:list={[
+        'text-sm',
+        isHero ? 'text-primary-100' : 'text-text-muted',
+      ]}>
+        Web制作・AI活用・フリーランスの実践ノウハウを週1回お届けします。
+      </p>
+    </div>
+  )}
+
+  <form class="newsletter-subscribe flex flex-col sm:flex-row gap-2 max-w-md mx-auto" data-variant={variant}>
+    <label for={inputId} class="sr-only">メールアドレス</label>
+    <input
+      type="email"
+      name="email"
+      id={inputId}
+      placeholder="メールアドレス"
+      required
+      autocomplete="email"
+      class:list={[
+        'flex-1 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-400',
+        isHero ? 'bg-white/20 text-white placeholder:text-primary-200 border border-white/30' : 'bg-surface border border-border text-text',
+        isFooter && 'bg-surface-dark border-white/20 text-white placeholder:text-white/50',
+      ]}
+    />
+    <button
+      type="submit"
+      class:list={[
+        'px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap',
+        isHero ? 'bg-white text-primary-700 hover:bg-primary-50' : 'bg-primary-600 text-white hover:bg-primary-700',
+        isFooter && 'bg-primary-500 text-white hover:bg-primary-400',
+      ]}
+    >
+      購読する
+    </button>
+  </form>
+
+  <div class="newsletter-message mt-3 text-center text-sm hidden" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+  document.querySelectorAll('.newsletter-subscribe').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formEl = e.target as HTMLFormElement;
+      const email = (formEl.querySelector('input[name="email"]') as HTMLInputElement).value;
+      const msgEl = formEl.closest('.newsletter-form')?.querySelector('.newsletter-message') as HTMLElement;
+      const btn = formEl.querySelector('button') as HTMLButtonElement;
+
+      btn.disabled = true;
+      btn.textContent = '送信中...';
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const res = await fetch('https://newsletter-api.clvr.lol/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
+        if (res.ok) {
+          msgEl.textContent = '登録ありがとうございます！';
+          msgEl.className = 'newsletter-message mt-3 text-center text-sm text-green-400';
+          msgEl.classList.remove('hidden');
+          formEl.reset();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          msgEl.textContent = data.error || '登録に失敗しました。もう一度お試しください。';
+          msgEl.className = 'newsletter-message mt-3 text-center text-sm text-red-400';
+          msgEl.classList.remove('hidden');
+        }
+      } catch (err) {
+        clearTimeout(timeout);
+        const message = (err as Error).name === 'AbortError'
+          ? '通信がタイムアウトしました。もう一度お試しください。'
+          : '通信エラーが発生しました。もう一度お試しください。';
+        msgEl.textContent = message;
+        msgEl.className = 'newsletter-message mt-3 text-center text-sm text-red-400';
+        msgEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '購読する';
+      }
+    });
+  });
+</script>

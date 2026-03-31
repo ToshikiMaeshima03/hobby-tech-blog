@@ -1,0 +1,31 @@
+---
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { headings } = Astro.props;
+const filtered = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+{filtered.length >= 3 && (
+  <nav class="toc bg-surface-alt border border-border rounded-xl p-5 mb-8" aria-label="目次">
+    <details open class="group">
+      <summary class="flex items-center justify-between cursor-pointer list-none font-bold text-sm text-text rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2">
+        <span>目次</span>
+        <svg aria-hidden="true" class="w-4 h-4 text-text-muted group-open:rotate-180 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <ol class="mt-3 space-y-1.5 text-sm">
+        {filtered.map(h => (
+          <li class:list={[h.depth === 3 && 'ml-4']}>
+            <a
+              href={`#${h.slug}`}
+              class="text-text-muted hover:text-primary-600 transition-colors block py-0.5"
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  </nav>
+)}
