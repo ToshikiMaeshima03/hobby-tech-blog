@@ -3,7 +3,7 @@ title: "Claude Code で Web制作を効率化する実践テクニック5選【2
 description: "Claude Code を活用して LP・コーポレートサイトの制作速度を劇的に向上させる具体的な方法を解説。プロンプト例付き。"
 category: "ai"
 tags: ["claude-code", "AI", "Web制作", "効率化", "プロンプト"]
-publishedAt: 2026-03-30
+publishedAt: 2026-03-07
 featured: true
 ---
 

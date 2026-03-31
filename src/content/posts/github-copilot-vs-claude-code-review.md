@@ -3,7 +3,7 @@ title: "GitHub Copilot vs Claude Code 比較レビュー【2026年版】"
 description: "GitHub CopilotとClaude Codeの機能・料金・使い勝手を徹底比較。Web開発の実務での活用シーンに基づいて、最適な選択肢を提案。"
 category: "ai"
 tags: ["GitHub Copilot", "Claude Code", "AI", "コーディング", "開発ツール"]
-publishedAt: 2026-03-30
+publishedAt: 2026-03-13
 featured: false
 ---
 

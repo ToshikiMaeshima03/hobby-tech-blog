@@ -1,0 +1,126 @@
+---
+---
+
+<!-- 検索ボタン（デスクトップ） -->
+<button
+  id="search-btn"
+  type="button"
+  class="text-text-muted hover:text-text transition-colors flex items-center gap-1.5 text-sm"
+  aria-label="サイト内検索を開く"
+>
+  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+  <span class="hidden lg:inline text-xs text-text-muted/60 border border-border rounded px-1.5 py-0.5">⌘K</span>
+</button>
+
+<!-- 検索モーダル -->
+<dialog
+  id="search-dialog"
+  class="w-full max-w-xl p-0 rounded-xl shadow-2xl backdrop:bg-black/50 bg-surface border border-border"
+>
+  <div class="p-4">
+    <div class="flex items-center gap-3 mb-4">
+      <svg aria-hidden="true" class="text-text-muted shrink-0" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input
+        id="search-input"
+        type="search"
+        placeholder="記事を検索..."
+        autocomplete="off"
+        class="flex-1 bg-transparent text-text text-lg outline-none placeholder:text-text-muted/50"
+      />
+      <button
+        type="button"
+        id="search-close"
+        class="text-xs text-text-muted border border-border rounded px-2 py-1 hover:bg-surface-alt transition-colors"
+        aria-label="検索を閉じる"
+      >
+        ESC
+      </button>
+    </div>
+    <div id="search-results" class="max-h-[60vh] overflow-y-auto">
+      <p class="text-sm text-text-muted text-center py-8">キーワードを入力して検索</p>
+    </div>
+  </div>
+</dialog>
+
+<script is:inline>
+  (function() {
+    var pagefind = null;
+
+    async function loadPagefind() {
+      if (pagefind) return pagefind;
+      pagefind = await import('/pagefind/pagefind.js');
+      await pagefind.init();
+      return pagefind;
+    }
+
+    var dialog = document.getElementById('search-dialog');
+    var input = document.getElementById('search-input');
+    var results = document.getElementById('search-results');
+    var openBtn = document.getElementById('search-btn');
+    var closeBtn = document.getElementById('search-close');
+
+    function openSearch() {
+      dialog.showModal();
+      input.value = '';
+      input.focus();
+      results.innerHTML = '<p class="text-sm text-text-muted text-center py-8">キーワードを入力して検索</p>';
+      loadPagefind();
+    }
+
+    function closeSearch() {
+      dialog.close();
+    }
+
+    openBtn.addEventListener('click', openSearch);
+    closeBtn.addEventListener('click', closeSearch);
+
+    dialog.addEventListener('click', function(e) {
+      if (e.target === dialog) closeSearch();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (dialog.open) {
+          closeSearch();
+        } else {
+          openSearch();
+        }
+      }
+    });
+
+    var debounceTimer;
+
+    input.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(async function() {
+        var query = input.value.trim();
+        if (!query) {
+          results.innerHTML = '<p class="text-sm text-text-muted text-center py-8">キーワードを入力して検索</p>';
+          return;
+        }
+
+        var pf = await loadPagefind();
+        var search = await pf.search(query);
+
+        if (search.results.length === 0) {
+          results.innerHTML = '<p class="text-sm text-text-muted text-center py-8">検索結果が見つかりませんでした</p>';
+          return;
+        }
+
+        var items = await Promise.all(
+          search.results.slice(0, 10).map(function(r) { return r.data(); })
+        );
+
+        results.innerHTML = items
+          .map(function(item) {
+            return '<a href="' + item.url + '" class="block px-3 py-3 rounded-lg hover:bg-surface-alt transition-colors group">' +
+              '<div class="font-medium text-text group-hover:text-primary-600 transition-colors">' + (item.meta.title || '') + '</div>' +
+              '<div class="text-sm text-text-muted mt-1 line-clamp-2">' + (item.excerpt || '') + '</div>' +
+              '</a>';
+          })
+          .join('');
+      }, 200);
+    });
+  })();
+</script>

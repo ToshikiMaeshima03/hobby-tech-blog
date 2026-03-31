@@ -6,7 +6,7 @@ export const site = {
   authorDescription: 'エックスサーバー株式会社の開発部門でエンジニアとして勤務。WordPress開発・Webパフォーマンス最適化が専門。ゲーム業界7年のフロントエンド開発経験を持つ。',
   locale: 'ja_JP',
   language: 'ja',
-  ogImage: '/images/og-default.png',
+  ogImage: '/og-default.png',
   newsletterApiUrl: 'https://newsletter-api.clvr.lol/subscribe',
   social: {
     github: 'https://github.com/xs-tmaeshima',

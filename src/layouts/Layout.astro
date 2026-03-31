@@ -1,6 +1,7 @@
 ---
 import { site } from '@/data/site';
 import NewsletterForm from '@/components/NewsletterForm.astro';
+import SearchDialog from '@/components/SearchDialog.astro';
 import '@/styles/global.css';
 
 interface Props {
@@ -127,6 +128,7 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : new URL(ogImage, site.
           <a href="/rss.xml" class="text-text-muted hover:text-text transition-colors" aria-label="RSS">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
           </a>
+          <SearchDialog />
         </nav>
 
         <!-- Mobile hamburger -->

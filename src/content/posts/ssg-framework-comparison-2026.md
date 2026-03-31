@@ -3,7 +3,7 @@ title: "静的サイトジェネレーター比較2026：Astro vs Next.js vs Hug
 description: "Astro・Next.js・Hugo の3大静的サイトジェネレーターを速度・学習コスト・エコシステムの観点で徹底比較。用途別おすすめも紹介。"
 category: "tools"
 tags: ["Astro", "Next.js", "Hugo", "SSG", "フレームワーク比較"]
-publishedAt: 2026-03-30
+publishedAt: 2026-03-24
 featured: false
 ---
 

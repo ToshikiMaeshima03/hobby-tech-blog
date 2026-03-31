@@ -3,7 +3,7 @@ title: "Astro + Tailwind CSS v4 でブログを作る手順【2026年最新】"
 description: "Astro v5 と Tailwind CSS v4 を使って高速なブログサイトを構築する方法を解説。SEO対応、RSS、サイトマップ設定まで網羅。"
 category: "web-development"
 tags: ["astro", "tailwind-css", "ブログ構築", "静的サイト"]
-publishedAt: 2026-03-30
+publishedAt: 2026-03-17
 featured: false
 ---
 

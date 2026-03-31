@@ -38,7 +38,7 @@ const articleSchema = {
   "@type": "Article",
   "headline": title,
   "description": description,
-  "image": `${site.url}${site.ogImage}`,
+  "image": `${site.url}/og/${post.id}.png`,
   "datePublished": publishedAt.toISOString(),
   "dateModified": (updatedAt || publishedAt).toISOString(),
   "author": {
@@ -76,6 +76,7 @@ const breadcrumbSchema = {
 <Layout
   title={title}
   description={description}
+  ogImage={`/og/${post.id}.png`}
   ogType="article"
   publishedAt={publishedAt}
   updatedAt={updatedAt}
