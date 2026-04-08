@@ -1,6 +1,5 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import NewsletterForm from '@/components/NewsletterForm.astro';
 import { site } from '@/data/site';
 
 const personSchema = {
@@ -12,11 +11,7 @@ const personSchema = {
     "url": `${site.url}/about/`,
     "description": site.authorDescription,
     "sameAs": [site.social.github, site.social.portfolio].filter(Boolean),
-    "jobTitle": "Web Engineer",
-    "worksFor": {
-      "@type": "Organization",
-      "name": "エックスサーバー株式会社",
-    },
+    "jobTitle": "Game Developer / Engineer",
   },
 };
 
@@ -30,7 +25,7 @@ const breadcrumbSchema = {
 };
 ---
 
-<Layout title="About" description="Code & Craft の運営者プロフィール。Web制作とフリーランス向けの技術情報を発信しています。">
+<Layout title="About" description="Tech Playground の運営者プロフィール。ゲーム開発・低レイヤ技術・AI開発の情報を発信しています。">
   <script type="application/ld+json" set:html={JSON.stringify(personSchema)} slot="head" />
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} slot="head" />
 
@@ -53,7 +48,7 @@ const breadcrumbSchema = {
       </div>
       <div class="text-center sm:text-left">
         <h1 class="text-2xl font-bold mb-1">{site.author}</h1>
-        <p class="text-text-muted text-sm mb-3">Web Engineer / {site.name} 運営</p>
+        <p class="text-text-muted text-sm mb-3">Game Dev / Engineer / {site.name} 運営</p>
         <div class="flex items-center justify-center sm:justify-start gap-3">
           {site.social.github && (
             <a href={site.social.github} target="_blank" rel="noopener noreferrer"
@@ -77,47 +72,41 @@ const breadcrumbSchema = {
     <div class="prose">
       <h2>このブログについて</h2>
       <p>
-        <strong>{site.name}</strong> は、Web制作・AI活用・フリーランスの実践的なノウハウを発信するテックブログです。
-        「知っていれば10倍速くなる」技術Tipsや、現場で使えるツール比較、副業Web制作のリアルな情報をお届けしています。
+        <strong>{site.name}</strong> は、ゲーム開発・低レイヤ技術・AI駆動開発・ゲーム攻略の情報を発信する趣味テックブログです。
+        Unreal Engine や Rust の実装記事から、LoL・PoE2・EfT のメタ分析まで、技術で遊ぶエンジニアの実験場です。
       </p>
 
       <h2>運営者について</h2>
       <p>
-        エックスサーバー株式会社の開発部門でエンジニアとして勤務しています。
-        WordPressのテーマ・プラグイン開発やWebサービスのパフォーマンス最適化を日常的に担当しています。
+        ゲーム業界で7年間フロントエンド開発に従事した経験を持つエンジニアです。
+        コンシューマーゲームやモバイルゲームの UI/UX 実装を経験しました。
       </p>
       <p>
-        前職はゲーム業界で7年間フロントエンド開発に従事。
-        コンシューマーゲームやモバイルゲームの UI/UX 実装を経験しました。
+        現在は本業の傍ら、趣味で Unreal Engine・C++・Rust に触れ、
+        Claude Code や AI 駆動開発の実践を日々行っています。
       </p>
 
       <h3>技術スタック</h3>
       <ul>
-        <li><strong>フロントエンド</strong>: HTML / CSS / JavaScript / TypeScript / React / Astro</li>
-        <li><strong>バックエンド</strong>: PHP（WordPress）/ Python / Node.js</li>
-        <li><strong>インフラ</strong>: Cloudflare / VPS / Docker</li>
-        <li><strong>AI</strong>: Claude Code / ChatGPT を活用した開発効率化</li>
+        <li><strong>ゲーム開発</strong>: Unreal Engine 5 / Unity / DirectX / C++</li>
+        <li><strong>言語</strong>: Rust / C++ / TypeScript / Python</li>
+        <li><strong>AI開発</strong>: Claude Code / Codex / AI駆動開発ワークフロー</li>
+        <li><strong>インフラ</strong>: Cloudflare / Docker / Linux</li>
       </ul>
 
-      <h3>得意分野</h3>
+      <h3>プレイ中のゲーム</h3>
       <ul>
-        <li>Webサイトのパフォーマンス最適化（Lighthouse 全項目90+）</li>
-        <li>WordPress テーマ・プラグイン開発</li>
-        <li>LP・コーポレートサイト制作</li>
-        <li>AI を活用した開発ワークフロー構築</li>
+        <li><strong>League of Legends</strong>: シーズン1からプレイ</li>
+        <li><strong>Path of Exile 2</strong>: エンドゲームコンテンツを攻略中</li>
+        <li><strong>Escape from Tarkov</strong>: タルコフ沼にハマっています</li>
       </ul>
 
       <h2>お問い合わせ</h2>
       <p>
-        記事の内容に関するご質問や、お仕事のご依頼は
-        <a href={site.social.portfolio} target="_blank" rel="noopener noreferrer">ポートフォリオサイト<span class="sr-only">（新しいタブで開く）</span></a>
-        よりお気軽にお問い合わせください。
+        記事の内容に関するご質問は
+        <a href={site.social.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only">（新しいタブで開く）</span></a>
+        よりお気軽にどうぞ。
       </p>
-    </div>
-
-    <!-- Newsletter -->
-    <div class="mt-12">
-      <NewsletterForm variant="hero" />
     </div>
 
     <!-- Back link -->

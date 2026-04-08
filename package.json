@@ -1,5 +1,5 @@
 {
-  "name": "seo-blog",
+  "name": "hobby-tech-blog",
   "type": "module",
   "version": "1.0.0",
   "private": true,
@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build && npx pagefind --site dist",
     "preview": "astro preview",
-    "deploy": "astro build && wrangler pages deploy dist --project-name=seo-blog"
+    "deploy": "astro build && wrangler pages deploy dist --project-name=hobby-tech-blog"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.0",
