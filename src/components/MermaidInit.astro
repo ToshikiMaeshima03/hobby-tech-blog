@@ -1,0 +1,102 @@
+---
+// Mermaid.js 初期化コンポーネント
+// mermaid コードブロックがページ内にある場合のみ mermaid.js を動的にロードする
+---
+
+<script is:inline>
+  (function () {
+    var mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
+    if (mermaidBlocks.length === 0) return;
+
+    mermaidBlocks.forEach(function (block) {
+      block.style.opacity = '0';
+      block.style.transition = 'opacity 0.3s ease';
+    });
+
+    var script = document.createElement('script');
+    script.type = 'module';
+    script.textContent = [
+      'import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";',
+      '',
+      'mermaid.initialize({',
+      '  startOnLoad: false,',
+      '  theme: "dark",',
+      '  themeVariables: {',
+      '    primaryColor: "#7e22ce",',
+      '    primaryTextColor: "#f3e8ff",',
+      '    primaryBorderColor: "#9333ea",',
+      '    lineColor: "#a855f7",',
+      '    secondaryColor: "#3b0764",',
+      '    tertiaryColor: "#1e1b2e",',
+      '    background: "#18181b",',
+      '    mainBkg: "#1e1b2e",',
+      '    nodeBorder: "#9333ea",',
+      '    clusterBkg: "#1e1b2e",',
+      '    clusterBorder: "#6b21a8",',
+      '    titleColor: "#e9d5ff",',
+      '    edgeLabelBackground: "#18181b",',
+      '    textColor: "#e1e4e8",',
+      '    labelTextColor: "#e1e4e8",',
+      '    actorTextColor: "#e1e4e8",',
+      '    actorBorder: "#9333ea",',
+      '    actorBkg: "#1e1b2e",',
+      '    signalColor: "#a855f7",',
+      '    signalTextColor: "#e1e4e8",',
+      '    labelBoxBkgColor: "#1e1b2e",',
+      '    labelBoxBorderColor: "#6b21a8",',
+      '    noteBkgColor: "#3b0764",',
+      '    noteTextColor: "#f3e8ff",',
+      '    noteBorderColor: "#9333ea",',
+      '    activationBorderColor: "#9333ea",',
+      '    activationBkgColor: "#1e1b2e",',
+      '    sequenceNumberColor: "#f3e8ff",',
+      '    sectionBkgColor: "#1e1b2e",',
+      '    altSectionBkgColor: "#18181b",',
+      '    sectionBkgColor2: "#3b0764",',
+      '    taskBorderColor: "#9333ea",',
+      '    taskBkgColor: "#7e22ce",',
+      '    taskTextColor: "#f3e8ff",',
+      '    taskTextLightColor: "#e9d5ff",',
+      '    taskTextOutsideColor: "#e1e4e8",',
+      '    gridColor: "#6b21a8",',
+      '    doneTaskBkgColor: "#581c87",',
+      '    activeTaskBkgColor: "#a855f7",',
+      '    critBorderColor: "#c084fc",',
+      '    todayLineColor: "#c084fc",',
+      '    fontFamily: "Inter, Noto Sans JP, system-ui, sans-serif",',
+      '    fontSize: "14px"',
+      '  },',
+      '  flowchart: { curve: "basis", padding: 16 },',
+      '  sequence: { mirrorActors: false },',
+      '  fontFamily: "Inter, Noto Sans JP, system-ui, sans-serif"',
+      '});',
+      '',
+      'var blocks = document.querySelectorAll(\'pre[data-language="mermaid"]\');',
+      '',
+      'for (var i = 0; i < blocks.length; i++) {',
+      '  var pre = blocks[i];',
+      '  var code = pre.querySelector("code");',
+      '  if (!code) continue;',
+      '',
+      '  var diagramText = code.textContent.trim();',
+      '',
+      '  var container = document.createElement("div");',
+      '  container.className = "mermaid-diagram";',
+      '  container.setAttribute("role", "img");',
+      '  container.setAttribute("aria-label", "ダイアグラム");',
+      '',
+      '  pre.parentNode.replaceChild(container, pre);',
+      '',
+      '  try {',
+      '    var result = await mermaid.render("mermaid-svg-" + i, diagramText);',
+      '    container.innerHTML = result.svg;',
+      '  } catch (err) {',
+      '    container.parentNode.replaceChild(pre, container);',
+      '    pre.style.opacity = "1";',
+      '    console.warn("[Mermaid] レンダリング失敗:", err.message);',
+      '  }',
+      '}',
+    ].join('\n');
+    document.head.appendChild(script);
+  })();
+</script>

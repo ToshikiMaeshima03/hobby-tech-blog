@@ -134,8 +134,23 @@ body {
 }
 
 .prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
   border-radius: 0.75rem;
-  margin: 1.5rem 0;
+  margin: 2rem auto 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* 画像直後の出典キャプション（*出典:...*） */
+.prose p:has(img) + p em:first-child:last-child,
+.prose p:has(img) + p > em:only-child {
+  display: block;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 0;
+  margin-bottom: 2rem;
 }
 
 .prose table {
@@ -160,4 +175,19 @@ body {
 .prose strong {
   font-weight: 700;
   color: var(--color-text);
+}
+
+/* Mermaid ダイアグラム */
+.prose .mermaid-diagram {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background-color: #18181b;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.prose .mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
 }
