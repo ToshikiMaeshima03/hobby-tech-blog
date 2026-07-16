@@ -1,6 +1,6 @@
 ---
 title: "Rust Bevy 0.22 Hierarchical Z-Buffer実装｜オクルージョンカリング精度を99%向上させる低レイヤー最適化【2026年7月】"
-description: "Bevy 0.22の新機能Hierarchical Z-Buffer（Hi-Z）実装で大規模ゲーム開発のオクルージョンカリング精度を劇的に向上させる低レイヤー最適化テクニックを解説。GPU Compute Shaderによる階層的深度バッファ生成から、Visibility Culling統合、パフォーマンス検証まで実装完全ガイド。"
+description: "Bevy 0.22の新機能Hierarchical Z-Buffer（Hi-Z）でオクルージョンカリング精度を向上させる低レイヤー最適化を解説。GPU Compute Shaderによる階層的深度バッファ生成からVisibility Culling統合、パフォーマンス検証まで。"
 category: "game-dev"
 tags: ["Rust", "Bevy", "Hierarchical Z-Buffer", "オクルージョンカリング", "GPU最適化", "低レイヤー"]
 publishedAt: 2026-07-02
