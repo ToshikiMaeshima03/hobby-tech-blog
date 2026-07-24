@@ -10,7 +10,7 @@ const personSchema = {
     "name": site.author,
     "url": `${site.url}/about/`,
     "description": site.authorDescription,
-    "sameAs": [site.social.github, site.social.portfolio].filter(Boolean),
+    "sameAs": [site.social.github, site.social.x, site.social.portfolio].filter(Boolean),
     "jobTitle": "Game Developer / Engineer",
   },
 };
@@ -42,7 +42,7 @@ const breadcrumbSchema = {
     <!-- Profile Header -->
     <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10">
       <div class="shrink-0">
-        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-4xl font-bold text-white shadow-lg" role="img" aria-label="Cleverのアバター">
+        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-4xl font-bold text-white shadow-lg" role="img" aria-label="matoshiのアバター">
           C
         </div>
       </div>
@@ -50,6 +50,13 @@ const breadcrumbSchema = {
         <h1 class="text-2xl font-bold mb-1">{site.author}</h1>
         <p class="text-text-muted text-sm mb-3">Game Dev / Engineer / {site.name} 運営</p>
         <div class="flex items-center justify-center sm:justify-start gap-3">
+          {site.social.x && (
+            <a href={site.social.x} target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text transition-colors">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+              {site.social.xHandle}<span class="sr-only">（新しいタブで開く）</span>
+            </a>
+          )}
           {site.social.github && (
             <a href={site.social.github} target="_blank" rel="noopener noreferrer"
               class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text transition-colors">

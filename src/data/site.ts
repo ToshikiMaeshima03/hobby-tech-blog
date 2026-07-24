@@ -2,7 +2,7 @@ export const site = {
   name: 'Tech Playground',
   description: 'ゲーム開発・低レイヤ技術・AI駆動開発・ゲーム攻略まで、技術で遊ぶエンジニアの実験場',
   url: 'https://lab.clvr.lol',
-  author: 'Clever',
+  author: 'matoshi',
   authorDescription: 'ゲーム業界7年のフロントエンド開発経験を持つエンジニア。趣味でUnreal Engine・C++・Rustを触り、Claude CodeやAI駆動開発を実践中。LoL・PoE2・EfTをプレイ。',
   locale: 'ja_JP',
   language: 'ja',
@@ -10,6 +10,8 @@ export const site = {
   newsletterApiUrl: '',
   social: {
     github: 'https://github.com/xs-tmaeshima',
+    x: 'https://x.com/CLVR_mts',
+    xHandle: '@CLVR_mts',
     portfolio: 'https://cleverlab.lol/',
   },
   categories: [
